@@ -4,7 +4,10 @@ import {
   SafeAreaView, KeyboardAvoidingView, Platform, ActivityIndicator
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Mail, Lock, LogIn } from 'lucide-react-native';
+import { Mail, Lock, LogIn, Globe, User } from 'lucide-react-native';
+
+
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -15,122 +18,111 @@ export default function LoginScreen() {
   const handleLogin = async () => {
     if (!email || !password) return;
     setLoading(true);
-    try {
-      // Firebase auth: signInWithEmailAndPassword(auth, email, password)
-      // For now, navigate directly
+    setTimeout(() => {
       router.replace('/(tabs)');
-    } catch (err) {
-      console.error(err);
-    } finally {
       setLoading(false);
-    }
+    }, 1200);
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#0f172a' }}>
+    <SafeAreaView className="flex-1 bg-dark-bg">
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ flex: 1, paddingHorizontal: 28, justifyContent: 'center' }}
+        className="flex-1 px-8 justify-center"
       >
-        {/* Logo */}
-        <View style={{ alignItems: 'center', marginBottom: 48 }}>
-          <View style={{
-            backgroundColor: '#fbbf24', padding: 22, borderRadius: 36,
-            marginBottom: 20, shadowColor: '#fbbf24',
-            shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.4, shadowRadius: 20,
-          }}>
-            <Text style={{ fontSize: 52 }}>♞</Text>
+        {/* Branding */}
+        <View className="items-center mb-12">
+          <LinearGradient
+            colors={['#8b5cf6', '#6366f1']}
+            className="p-6 rounded-[36px] mb-6"
+          >
+            <Text className="text-5xl">♟</Text>
+          </LinearGradient>
+          <Text className="text-white text-4xl font-black tracking-tighter">
+            Checkmate <Text className="text-primary">X</Text>
+          </Text>
+          <Text className="text-gray-500 font-bold mt-2">Elite Chess Intelligence</Text>
+        </View>
+
+        {/* Form */}
+        <View className="mb-6">
+          <View className="bg-dark-card border border-dark-border rounded-3xl flex-row items-center px-5 py-4 mb-3">
+            <Mail size={18} color="#475569" />
+            <TextInput
+              placeholder="Email Address"
+              placeholderTextColor="#475569"
+              className="flex-1 text-white ml-4 font-bold"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
           </View>
-          <Text style={{ color: '#fff', fontSize: 34, fontWeight: '800', letterSpacing: -1 }}>
-            ChessApp
-          </Text>
-          <Text style={{ color: '#64748b', marginTop: 6, fontSize: 15 }}>
-            Sign in to your account
-          </Text>
+
+          <View className="bg-dark-card border border-dark-border rounded-3xl flex-row items-center px-5 py-4">
+            <Lock size={18} color="#475569" />
+            <TextInput
+              placeholder="Password"
+              placeholderTextColor="#475569"
+              className="flex-1 text-white ml-4 font-bold"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
+          </View>
+          <TouchableOpacity className="mt-3 items-end">
+            <Text className="text-primary font-black text-xs uppercase tracking-widest">Forgot Password?</Text>
+          </TouchableOpacity>
         </View>
 
-        {/* Inputs */}
-        <View style={{
-          backgroundColor: '#1e293b', borderRadius: 20,
-          borderWidth: 1, borderColor: '#334155',
-          flexDirection: 'row', alignItems: 'center',
-          paddingHorizontal: 18, paddingVertical: 16, marginBottom: 12,
-        }}>
-          <Mail size={18} color="#64748b" />
-          <TextInput
-            placeholder="Email" placeholderTextColor="#475569"
-            style={{ flex: 1, color: '#fff', marginLeft: 12, fontSize: 15 }}
-            value={email} onChangeText={setEmail}
-            keyboardType="email-address" autoCapitalize="none"
-          />
-        </View>
-
-        <View style={{
-          backgroundColor: '#1e293b', borderRadius: 20,
-          borderWidth: 1, borderColor: '#334155',
-          flexDirection: 'row', alignItems: 'center',
-          paddingHorizontal: 18, paddingVertical: 16, marginBottom: 8,
-        }}>
-          <Lock size={18} color="#64748b" />
-          <TextInput
-            placeholder="Password" placeholderTextColor="#475569"
-            style={{ flex: 1, color: '#fff', marginLeft: 12, fontSize: 15 }}
-            value={password} onChangeText={setPassword}
-            secureTextEntry
-          />
-        </View>
-
-        <TouchableOpacity style={{ alignSelf: 'flex-end', marginBottom: 28 }}>
-          <Text style={{ color: '#fbbf24', fontWeight: '700' }}>Forgot Password?</Text>
-        </TouchableOpacity>
-
-        {/* Sign In Button */}
-        <TouchableOpacity
+        {/* Submit */}
+        <TouchableOpacity 
           onPress={handleLogin}
-          style={{
-            backgroundColor: '#fbbf24', paddingVertical: 20, borderRadius: 22,
-            alignItems: 'center', marginBottom: 20,
-            shadowColor: '#fbbf24', shadowOffset: { width: 0, height: 6 },
-            shadowOpacity: 0.35, shadowRadius: 12,
-          }}
+          disabled={loading}
+          className="rounded-3xl overflow-hidden mb-8"
         >
-          {loading
-            ? <ActivityIndicator color="#000" />
-            : <Text style={{ color: '#000', fontWeight: '800', fontSize: 17 }}>Sign In</Text>
-          }
+          <LinearGradient
+            colors={['#8b5cf6', '#6366f1']}
+            className="py-5 items-center flex-row justify-center"
+          >
+            {loading ? <ActivityIndicator color="white" /> : (
+              <>
+                <Text className="text-white font-black text-lg mr-2">LOG IN</Text>
+                <LogIn color="white" size={20} />
+              </>
+            )}
+          </LinearGradient>
         </TouchableOpacity>
 
-        {/* Divider */}
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
-          <View style={{ flex: 1, height: 1, backgroundColor: '#1e293b' }} />
-          <Text style={{ color: '#475569', marginHorizontal: 12, fontWeight: '600', fontSize: 12 }}>
-            OR CONTINUE WITH
-          </Text>
-          <View style={{ flex: 1, height: 1, backgroundColor: '#1e293b' }} />
+        {/* Alternative */}
+        <View className="flex-row items-center mb-8">
+          <View className="flex-1 h-[1px] bg-dark-border" />
+          <Text className="text-gray-500 font-black text-[10px] mx-4 uppercase tracking-widest">Social Gateway</Text>
+          <View className="flex-1 h-[1px] bg-dark-border" />
         </View>
 
-        {/* Social Buttons */}
-        <View style={{ flexDirection: 'row', gap: 12, marginBottom: 36 }}>
-          {['G  Google', '⊕  Guest'].map((label) => (
-            <TouchableOpacity
-              key={label}
-              onPress={() => router.replace('/(tabs)')}
-              style={{
-                flex: 1, backgroundColor: '#1e293b', paddingVertical: 16,
-                borderRadius: 18, alignItems: 'center',
-                borderWidth: 1, borderColor: '#334155',
-              }}
-            >
-              <Text style={{ color: '#fff', fontWeight: '700' }}>{label}</Text>
-            </TouchableOpacity>
-          ))}
+        <View className="flex-row gap-x-3 mb-10">
+          <TouchableOpacity 
+            onPress={() => router.replace('/(tabs)')}
+            className="flex-1 bg-dark-card border border-dark-border py-4 rounded-3xl items-center flex-row justify-center"
+          >
+            <Globe color="white" size={18} className="mr-2" />
+            <Text className="text-white font-bold ml-2">Google</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            onPress={() => router.replace('/(tabs)')}
+            className="flex-1 bg-dark-card border border-dark-border py-4 rounded-3xl items-center flex-row justify-center"
+          >
+            <User color="white" size={18} className="mr-2" />
+            <Text className="text-white font-bold ml-2">Github</Text>
+          </TouchableOpacity>
         </View>
 
-        {/* Sign Up Link */}
-        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-          <Text style={{ color: '#64748b' }}>Don't have an account? </Text>
+        {/* Footer */}
+        <View className="flex-row justify-center">
+          <Text className="text-gray-500 font-bold">New to the elite? </Text>
           <TouchableOpacity onPress={() => router.push('/(auth)/signup')}>
-            <Text style={{ color: '#fbbf24', fontWeight: '700' }}>Sign Up</Text>
+            <Text className="text-primary font-black">Join Now</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>

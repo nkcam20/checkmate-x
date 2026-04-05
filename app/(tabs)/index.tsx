@@ -1,20 +1,13 @@
 import React from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity, SafeAreaView
+  View, Text, ScrollView, TouchableOpacity, SafeAreaView, Dimensions
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useGameStore } from '../../store/useGameStore';
+import { LucideTrophy, LucideGamepad2, LucideHistory, LucideTv, LucideUser, LucideSparkles, LucideSwords } from 'lucide-react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
-const COLORS = {
-  bg: '#0f172a',
-  card: '#1e293b',
-  border: '#334155',
-  accent: '#fbbf24',
-  muted: '#64748b',
-  white: '#f1f5f9',
-  green: '#22c55e',
-  red: '#ef4444',
-};
+const { width } = Dimensions.get('window');
 
 export default function Dashboard() {
   const router = useRouter();
@@ -28,157 +21,139 @@ export default function Dashboard() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.bg }}>
+    <SafeAreaView className="flex-1 bg-dark-bg">
       <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 28, paddingBottom: 32 }}
+        className="flex-1"
+        contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 20, paddingBottom: 40 }}
         showsVerticalScrollIndicator={false}
       >
-        {/* Greeting */}
-        <View style={{ marginBottom: 32 }}>
-          <Text style={{ color: COLORS.muted, fontSize: 13, fontWeight: '700', letterSpacing: 1.5 }}>
-            WELCOME BACK
-          </Text>
-          <Text style={{ color: COLORS.white, fontSize: 32, fontWeight: '800', marginTop: 4 }}>
-            Grandmaster ♟
-          </Text>
+        {/* Header Section */}
+        <View className="flex-row justify-between items-center mb-8">
+          <View>
+            <Text className="text-gray-400 text-xs font-bold tracking-[2px] uppercase">
+                Welcome back
+            </Text>
+            <Text className="text-white text-3xl font-black mt-1">
+                Grandmaster ♟
+            </Text>
+          </View>
+          <TouchableOpacity 
+            onPress={() => router.push('/(tabs)/profile')}
+            className="w-12 h-12 rounded-full border-2 border-primary overflow-hidden"
+          >
+            <View className="flex-1 bg-primary-light/20 items-center justify-center">
+              <LucideUser color="#8b5cf6" size={24} />
+            </View>
+          </TouchableOpacity>
         </View>
 
         {/* Stats Row */}
-        <View style={{ flexDirection: 'row', gap: 12, marginBottom: 32 }}>
+        <View className="flex-row gap-x-3 mb-8">
           {[
-            { label: 'Rating', value: '1450', sub: '+12 today', subColor: COLORS.green },
-            { label: 'Win Rate', value: '68%', sub: '84 wins', subColor: '#60a5fa' },
-            { label: 'Games', value: '124', sub: 'All time', subColor: COLORS.muted },
+            { label: 'Rating', value: '1450', sub: '+12 today', color: 'text-neon-cyan' },
+            { label: 'Win Rate', value: '68%', sub: '84 wins', color: 'text-neon-purple' },
+            { label: 'Rank', value: '#42', sub: 'Global', color: 'text-neon-blue' },
           ].map((s) => (
-            <View key={s.label} style={{
-              flex: 1, backgroundColor: COLORS.card, padding: 16, borderRadius: 20,
-              borderWidth: 1, borderColor: COLORS.border,
-            }}>
-              <Text style={{ color: COLORS.muted, fontSize: 11, fontWeight: '700', letterSpacing: 1.2 }}>
+            <View key={s.label} className="flex-1 bg-dark-card/60 rounded-3xl p-4 border border-dark-border">
+              <Text className="text-gray-500 text-[10px] font-bold tracking-wider mb-1">
                 {s.label.toUpperCase()}
               </Text>
-              <Text style={{ color: COLORS.white, fontSize: 22, fontWeight: '800', marginTop: 4 }}>
+              <Text className="text-white text-xl font-black">
                 {s.value}
               </Text>
-              <Text style={{ color: s.subColor, fontSize: 11, marginTop: 2, fontWeight: '600' }}>
+              <Text className={`${s.color} text-[10px] font-bold mt-1`}>
                 {s.sub}
               </Text>
             </View>
           ))}
         </View>
 
-        {/* Quick Play */}
-        <Text style={{ color: COLORS.white, fontSize: 18, fontWeight: '800', marginBottom: 14 }}>
-          Quick Play
-        </Text>
-
-        {/* Play Online big card */}
+        {/* Quick Play Highlight */}
+        <Text className="text-white text-lg font-black mb-4">Quick Play</Text>
+        
         <TouchableOpacity
           onPress={() => startGame('Multiplayer')}
-          style={{
-            backgroundColor: COLORS.accent, borderRadius: 28, padding: 24,
-            flexDirection: 'row', alignItems: 'center', marginBottom: 12,
-            shadowColor: COLORS.accent, shadowOffset: { width: 0, height: 8 },
-            shadowOpacity: 0.35, shadowRadius: 16,
-          }}
+          activeOpacity={0.8}
+          className="mb-4 overflow-hidden rounded-[32px]"
         >
-          <Text style={{ fontSize: 44, marginRight: 16 }}>🌐</Text>
-          <View style={{ flex: 1 }}>
-            <Text style={{ color: '#000', fontSize: 20, fontWeight: '800' }}>Play Online</Text>
-            <Text style={{ color: '#00000099', fontWeight: '600', marginTop: 2 }}>
-              Match by ELO rating
-            </Text>
-          </View>
-          <Text style={{ color: '#000', fontSize: 24 }}>›</Text>
+          <LinearGradient
+            colors={['#6366f1', '#a855f7']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            className="flex-row items-center p-6"
+          >
+            <View className="w-16 h-16 rounded-2xl bg-white/20 items-center justify-center mr-4">
+              <LucideSwords color="white" size={32} />
+            </View>
+            <View className="flex-1">
+              <Text className="text-white text-xl font-black">Play Online</Text>
+              <Text className="text-white/70 font-bold mt-0.5">Real-time matchmaking</Text>
+            </View>
+            <View className="w-10 h-10 rounded-full bg-white/20 items-center justify-center">
+              <Text className="text-white text-lg">→</Text>
+            </View>
+          </LinearGradient>
         </TouchableOpacity>
 
-        {/* vs AI card */}
         <TouchableOpacity
           onPress={() => startGame('AI', 'Medium')}
-          style={{
-            backgroundColor: COLORS.card, borderRadius: 28, padding: 24,
-            flexDirection: 'row', alignItems: 'center', marginBottom: 32,
-            borderWidth: 1, borderColor: COLORS.border,
-          }}
+          activeOpacity={0.8}
+          className="bg-dark-card border border-dark-border rounded-[32px] p-6 flex-row items-center mb-8"
         >
-          <Text style={{ fontSize: 44, marginRight: 16 }}>🤖</Text>
-          <View style={{ flex: 1 }}>
-            <Text style={{ color: COLORS.white, fontSize: 20, fontWeight: '800' }}>vs AI Engine</Text>
-            <Text style={{ color: COLORS.muted, fontWeight: '600', marginTop: 2 }}>
-              Stockfish-powered engine
-            </Text>
+          <View className="w-16 h-16 rounded-2xl bg-primary/20 items-center justify-center mr-4">
+            <LucideSparkles color="#8b5cf6" size={32} />
           </View>
-          <Text style={{ color: COLORS.accent, fontSize: 24 }}>›</Text>
+          <View className="flex-1">
+            <Text className="text-white text-xl font-black">Train vs AI</Text>
+            <Text className="text-gray-500 font-bold mt-0.5">Stockfish 10 WASM Engine</Text>
+          </View>
+          <View className="w-10 h-10 rounded-full bg-dark-border items-center justify-center">
+            <LucideGamepad2 color="#8b5cf6" size={20} />
+          </View>
         </TouchableOpacity>
 
-        {/* Difficulty Quick-Select */}
-        <Text style={{ color: COLORS.white, fontSize: 18, fontWeight: '800', marginBottom: 14 }}>
-          AI Difficulty
-        </Text>
-        <View style={{ flexDirection: 'row', gap: 10, marginBottom: 32 }}>
+        {/* AI Difficulty Section */}
+        <Text className="text-white text-lg font-black mb-4">Level Selection</Text>
+        <View className="flex-row flex-wrap gap-3 mb-8">
           {[
-            { name: 'Easy', emoji: '🌱', color: '#22c55e' },
-            { name: 'Medium', emoji: '⚡', color: '#60a5fa' },
-            { name: 'Hard', emoji: '🔥', color: '#f97316' },
-            { name: 'Expert', emoji: '☠️', color: '#ef4444' },
+            { name: 'Easy', emoji: '🌱', color: '#22c55e', bg: 'bg-green-500/10' },
+            { name: 'Medium', emoji: '⚡', color: '#3b82f6', bg: 'bg-blue-500/10' },
+            { name: 'Hard', emoji: '🔥', color: '#f97316', bg: 'bg-orange-500/10' },
+            { name: 'Expert', emoji: '☠️', color: '#ef4444', bg: 'bg-red-500/10' },
           ].map((d) => (
             <TouchableOpacity
               key={d.name}
               onPress={() => startGame('AI', d.name)}
-              style={{
-                flex: 1, backgroundColor: COLORS.card, paddingVertical: 16,
-                borderRadius: 18, alignItems: 'center',
-                borderWidth: 1, borderColor: COLORS.border,
-              }}
+              className={`flex-1 min-w-[48%] ${d.bg} border border-dark-border rounded-3xl p-5 items-center`}
             >
-              <Text style={{ fontSize: 22 }}>{d.emoji}</Text>
-              <Text style={{ color: d.color, fontSize: 11, fontWeight: '700', marginTop: 6 }}>
-                {d.name.toUpperCase()}
+              <Text className="text-2xl mb-2">{d.emoji}</Text>
+              <Text style={{ color: d.color }} className="text-xs font-black uppercase tracking-widest text-center">
+                {d.name}
               </Text>
             </TouchableOpacity>
           ))}
         </View>
 
-        {/* Recent Games */}
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-          <Text style={{ color: COLORS.white, fontSize: 18, fontWeight: '800' }}>Recent Games</Text>
-          <TouchableOpacity onPress={() => router.push('/(tabs)/history')}>
-            <Text style={{ color: COLORS.accent, fontWeight: '700' }}>View all</Text>
+        {/* Navigation Grid */}
+        <View className="flex-row gap-3">
+          <TouchableOpacity 
+            onPress={() => router.push('/(tabs)/history')}
+            className="flex-1 bg-dark-card border border-dark-border p-6 rounded-[32px] items-center"
+          >
+            <LucideHistory color="#3b82f6" size={28} />
+            <Text className="text-white font-bold mt-3">History</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+             onPress={() => router.push('/leaderboard')}
+
+             className="flex-1 bg-dark-card border border-dark-border p-6 rounded-[32px] items-center"
+          >
+            <LucideTrophy color="#fbbf24" size={28} />
+            <Text className="text-white font-bold mt-3">Rankings</Text>
           </TouchableOpacity>
         </View>
-
-        {[
-          { opp: 'Magnus_Clone', result: 'W', delta: '+14', type: 'Blitz', time: '2h ago' },
-          { opp: 'Stockfish Lvl 5', result: 'L', delta: '-8', type: 'Rapid', time: 'Yesterday' },
-          { opp: 'DeepBlue_88', result: 'D', delta: '+0', type: 'Bullet', time: '2d ago' },
-        ].map((g, i) => (
-          <View key={i} style={{
-            backgroundColor: COLORS.card, borderRadius: 18, padding: 18,
-            flexDirection: 'row', alignItems: 'center',
-            borderWidth: 1, borderColor: COLORS.border, marginBottom: 10,
-          }}>
-            <View style={{
-              width: 44, height: 44, borderRadius: 12, marginRight: 14,
-              backgroundColor: g.result === 'W' ? '#22c55e20' : g.result === 'L' ? '#ef444420' : '#33415520',
-              alignItems: 'center', justifyContent: 'center',
-            }}>
-              <Text style={{
-                fontSize: 18, fontWeight: '800',
-                color: g.result === 'W' ? COLORS.green : g.result === 'L' ? COLORS.red : COLORS.muted,
-              }}>{g.result}</Text>
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={{ color: COLORS.white, fontWeight: '700', fontSize: 15 }}>{g.opp}</Text>
-              <Text style={{ color: COLORS.muted, fontSize: 12, marginTop: 2 }}>{g.type} · {g.time}</Text>
-            </View>
-            <Text style={{
-              color: g.delta.startsWith('+') ? COLORS.green : g.delta === '+0' ? COLORS.muted : COLORS.red,
-              fontWeight: '800', fontSize: 15,
-            }}>{g.delta}</Text>
-          </View>
-        ))}
       </ScrollView>
     </SafeAreaView>
   );
 }
+

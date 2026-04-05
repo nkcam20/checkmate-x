@@ -1,18 +1,19 @@
 {
   "expo": {
-    "name": "Chess Master",
-    "slug": "chess-master",
+    "name": "Checkmate X",
+    "slug": "checkmate-x",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "chessapp",
+    "scheme": "checkmatex",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
       "image": "./assets/images/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#0f172a"
     },
+
     "ios": {
       "supportsTablet": true
     },

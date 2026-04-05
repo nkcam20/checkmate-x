@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { Chess, Move, Color } from 'chess.js';
-import { getBestMove, getEvaluation } from '../utils/chessAI';
 import { calculateCapturedPieces } from '../utils/chessUtils';
 
 interface GameState {
@@ -14,32 +13,27 @@ interface GameState {
   possibleMoves: string[];
   difficulty: 'Easy' | 'Medium' | 'Hard' | 'Expert';
   mode: 'AI' | 'Multiplayer' | 'Local';
+  boardTheme: 'Classic' | 'Dark' | 'Neon';
   playerColor: Color;
   capturedPieces: { w: string[]; b: string[] };
   materialDiff: number;
   evaluation: number;
   hint: string | null;
+  isThinking: boolean;
 
   // Actions
   makeMove: (move: { from: string; to: string; promotion?: string }) => boolean;
-  getHint: () => void;
+  receiveAIMove: (move: string) => void;
+  receiveEvaluation: (evalScore: number) => void;
   resetGame: () => void;
   setSelectedSquare: (square: string | null) => void;
   setMode: (mode: 'AI' | 'Multiplayer' | 'Local') => void;
   setDifficulty: (level: 'Easy' | 'Medium' | 'Hard' | 'Expert') => void;
+  setBoardTheme: (theme: 'Classic' | 'Dark' | 'Neon') => void;
   setPlayerColor: (color: Color) => void;
+  getHint: () => void;
   undoMove: () => void;
 }
-
-const getDepth = (difficulty: string) => {
-  switch (difficulty) {
-    case 'Easy': return 1;
-    case 'Medium': return 2;
-    case 'Hard': return 3;
-    case 'Expert': return 4;
-    default: return 2;
-  }
-};
 
 export const useGameStore = create<GameState>((set, get) => ({
   game: new Chess(),
@@ -52,79 +46,69 @@ export const useGameStore = create<GameState>((set, get) => ({
   possibleMoves: [],
   difficulty: 'Medium',
   mode: 'AI',
+  boardTheme: 'Dark',
   playerColor: 'w',
   capturedPieces: { w: [], b: [] },
   materialDiff: 0,
   evaluation: 0,
   hint: null,
+  isThinking: false,
 
   makeMove: (move) => {
-    const { game, difficulty, mode } = get();
+    const { game, mode, turn, playerColor } = get();
+    if (mode === 'AI' && turn !== playerColor) return false;
+
     try {
       const result = game.move(move);
       if (result) {
-        const newFen = game.fen();
-        const newGame = new Chess(newFen);
         set({
-          game: newGame,
-          board: newGame.board(),
-          turn: newGame.turn(),
-          isGameOver: newGame.isGameOver(),
-          history: newGame.history({ verbose: true }),
+          game: new Chess(game.fen()),
+          board: game.board(),
+          turn: game.turn(),
+          isGameOver: game.isGameOver(),
+          history: game.history({ verbose: true }),
           lastMove: result,
           selectedSquare: null,
           possibleMoves: [],
-          evaluation: newGame.isCheckmate()
-            ? (newGame.turn() === 'b' ? 10 : -10)
-            : getEvaluation(newGame) / 30,
-          capturedPieces: calculateCapturedPieces(newGame),
-          materialDiff: getEvaluation(newGame) / 10,
+          capturedPieces: calculateCapturedPieces(game),
+          isThinking: (mode === 'AI' && !game.isGameOver()),
           hint: null,
         });
-
-        // Trigger AI move if in AI mode
-        if (mode === 'AI' && !newGame.isGameOver()) {
-          setTimeout(() => {
-            const aiGame = new Chess(newGame.fen());
-            const bestMove = getBestMove(aiGame, getDepth(difficulty));
-            if (bestMove) {
-              aiGame.move(bestMove);
-              const aiHistory = aiGame.history({ verbose: true });
-              set({
-                game: aiGame,
-                board: aiGame.board(),
-                turn: aiGame.turn(),
-                isGameOver: aiGame.isGameOver(),
-                history: aiHistory,
-                lastMove: aiHistory[aiHistory.length - 1] || null,
-                evaluation: aiGame.isCheckmate()
-                  ? (aiGame.turn() === 'b' ? 10 : -10)
-                  : getEvaluation(aiGame) / 30,
-                capturedPieces: calculateCapturedPieces(aiGame),
-                materialDiff: getEvaluation(aiGame) / 10,
-              });
-            }
-          }, 400);
-        }
         return true;
       }
-    } catch (e) {
-      // Invalid move — silently swallow
-    }
+    } catch (e) {}
     return false;
   },
 
-  getHint: () => {
-    const { game, difficulty } = get();
-    const hint = getBestMove(game, getDepth(difficulty));
-    set({ hint });
+  receiveAIMove: (moveStr) => {
+    const { game, isGameOver } = get();
+    if (isGameOver) return;
+    try {
+      const result = game.move(moveStr);
+      if (result) {
+        set({
+          game: new Chess(game.fen()),
+          board: game.board(),
+          turn: game.turn(),
+          isGameOver: game.isGameOver(),
+          history: game.history({ verbose: true }),
+          lastMove: result,
+          capturedPieces: calculateCapturedPieces(game),
+          isThinking: false,
+        });
+      }
+    } catch (e) {
+      set({ isThinking: false });
+    }
   },
 
+  receiveEvaluation: (evalScore) => set({ evaluation: evalScore }),
+
   resetGame: () => {
-    const newGame = new Chess();
+    const g = new Chess();
     set({
-      game: newGame,
-      board: newGame.board(),
+      game: g,
+      board: g.board(),
       turn: 'w',
       isGameOver: false,
       history: [],
@@ -135,44 +119,59 @@ export const useGameStore = create<GameState>((set, get) => ({
       capturedPieces: { w: [], b: [] },
       materialDiff: 0,
       hint: null,
+      isThinking: false,
     });
   },
 
   setSelectedSquare: (square) => {
-    const { game } = get();
+    const { game, turn, playerColor, mode, selectedSquare, possibleMoves } = get();
+    if (mode === 'AI' && turn !== playerColor) return;
+
     if (!square) {
       set({ selectedSquare: null, possibleMoves: [] });
       return;
     }
-    const moves = game.moves({ square: square as any, verbose: true });
-    set({
-      selectedSquare: square,
-      possibleMoves: moves.map((m) => m.to),
-    });
+
+    if (selectedSquare && possibleMoves.includes(square)) {
+      get().makeMove({ from: selectedSquare, to: square, promotion: 'q' });
+      return;
+    }
+
+    const piece = game.get(square as any);
+    if (piece && piece.color === turn) {
+      set({
+        selectedSquare: square,
+        possibleMoves: game.moves({ square: square as any, verbose: true }).map(m => m.to),
+      });
+    } else {
+      set({ selectedSquare: null, possibleMoves: [] });
+    }
   },
 
   setMode: (mode) => set({ mode }),
   setDifficulty: (difficulty) => set({ difficulty }),
+  setBoardTheme: (boardTheme) => set({ boardTheme }),
   setPlayerColor: (playerColor) => set({ playerColor }),
+  getHint: () => {
+    // This will be handled by StockfishService usually, or we can trigger it here
+    // For now, let's just mark it.
+  },
 
   undoMove: () => {
     const { game, mode, playerColor } = get();
-    const cloneGame = new Chess(game.fen());
-    cloneGame.undo();
-    // If vs AI, undo the AI move too
-    if (mode === 'AI' && cloneGame.turn() !== playerColor) {
-      cloneGame.undo();
+    game.undo();
+    if (mode === 'AI' && game.turn() !== playerColor) {
+      game.undo();
     }
     set({
-      game: cloneGame,
-      board: cloneGame.board(),
-      turn: cloneGame.turn(),
-      isGameOver: cloneGame.isGameOver(),
-      history: cloneGame.history({ verbose: true }),
+      game: new Chess(game.fen()),
+      board: game.board(),
+      turn: game.turn(),
+      isGameOver: game.isGameOver(),
+      history: game.history({ verbose: true }),
       lastMove: null,
-      evaluation: getEvaluation(cloneGame) / 30,
-      capturedPieces: calculateCapturedPieces(cloneGame),
-      materialDiff: getEvaluation(cloneGame) / 10,
+      capturedPieces: calculateCapturedPieces(game),
+      isThinking: false,
     });
   },
 }));

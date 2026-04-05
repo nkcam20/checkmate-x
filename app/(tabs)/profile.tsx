@@ -1,148 +1,122 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, SafeAreaView, Switch } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, SafeAreaView, Switch, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useGameStore } from '../../store/useGameStore';
-
-const C = {
-  bg: '#0f172a', card: '#1e293b', border: '#334155',
-  accent: '#fbbf24', muted: '#64748b', white: '#f1f5f9',
-  green: '#22c55e', red: '#ef4444',
-};
+import { LucideSettings, LucideBell, LucideVolume2, LucideLogOut, LucideUser, LucideShieldCheck } from 'lucide-react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const { resetGame } = useGameStore();
+  const { boardTheme, setBoardTheme } = useGameStore();
   const [notifs, setNotifs] = useState(true);
   const [sounds, setSounds] = useState(true);
-  const [boardTheme, setBoardTheme] = useState<'Classic' | 'Neon' | 'Dark'>('Classic');
 
-  const RATINGS = [
-    { label: 'Blitz', value: '1450', color: C.accent },
-    { label: 'Rapid', value: '1620', color: '#60a5fa' },
-    { label: 'Bullet', value: '1200', color: '#c084fc' },
-  ];
-
-  const BOARD_THEMES = ['Classic', 'Neon', 'Dark'] as const;
+  const THEMES = ['Classic', 'Dark', 'Neon'] as const;
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: C.bg }}>
+    <SafeAreaView className="flex-1 bg-dark-bg">
       <ScrollView
-        contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 28, paddingBottom: 60 }}
+        contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 40, paddingBottom: 60 }}
         showsVerticalScrollIndicator={false}
       >
-        {/* Avatar */}
-        <View style={{ alignItems: 'center', marginBottom: 32 }}>
-          <View style={{
-            width: 100, height: 100, borderRadius: 30,
-            backgroundColor: C.accent, alignItems: 'center', justifyContent: 'center',
-            shadowColor: C.accent, shadowOffset: { width: 0, height: 8 },
-            shadowOpacity: 0.35, shadowRadius: 16, marginBottom: 16,
-          }}>
-            <Text style={{ fontSize: 56 }}>♛</Text>
-          </View>
-          <Text style={{ color: C.white, fontSize: 26, fontWeight: '800' }}>Grandmaster</Text>
-          <Text style={{ color: C.muted, fontSize: 13, marginTop: 4 }}>Joined April 2024</Text>
-        </View>
-
-        {/* Rating Cards */}
-        <View style={{ flexDirection: 'row', gap: 10, marginBottom: 32 }}>
-          {RATINGS.map((r) => (
-            <View key={r.label} style={{
-              flex: 1, backgroundColor: C.card, padding: 16,
-              borderRadius: 20, alignItems: 'center',
-              borderWidth: 1, borderColor: C.border,
-            }}>
-              <Text style={{ color: r.color, fontSize: 22, fontWeight: '800' }}>{r.value}</Text>
-              <Text style={{ color: C.muted, fontSize: 11, fontWeight: '700', marginTop: 4, letterSpacing: 0.8 }}>
-                {r.label.toUpperCase()}
-              </Text>
+        {/* Header with Avatar */}
+        <View className="items-center mb-10">
+          <View className="relative">
+            <View className="w-32 h-32 rounded-[40px] bg-primary/20 border-2 border-primary/40 items-center justify-center overflow-hidden">
+               <LucideUser color="#8b5cf6" size={64} />
             </View>
-          ))}
+            <View className="absolute -bottom-2 -right-2 bg-neon-cyan p-2 rounded-2xl border-4 border-dark-bg">
+               <LucideShieldCheck color="black" size={20} />
+            </View>
+          </View>
+          <Text className="text-white text-3xl font-black mt-6">Grandmaster</Text>
+          <Text className="text-primary-light font-black text-xs tracking-widest uppercase mt-1">Level 42 · Pro Member</Text>
         </View>
 
-        {/* Win / Loss / Draw */}
-        <View style={{
-          backgroundColor: C.card, borderRadius: 24, padding: 20,
-          borderWidth: 1, borderColor: C.border, marginBottom: 32,
-        }}>
-          <Text style={{ color: C.muted, fontSize: 12, fontWeight: '700', letterSpacing: 1.5, marginBottom: 16 }}>
-            MATCH RECORD
+        {/* Stats Grid */}
+        <View className="flex-row gap-x-3 mb-10">
+           {[
+             { label: 'Rating', val: '1450', sub: 'Blitz' },
+             { label: 'Win Rate', val: '68%', sub: 'Global' },
+             { label: 'Matches', val: '124', sub: 'Total' },
+           ].map((s, i) => (
+             <View key={i} className="flex-1 bg-dark-card border border-dark-border p-4 rounded-3xl items-center">
+               <Text className="text-white font-black text-xl">{s.val}</Text>
+               <Text className="text-gray-500 text-[9px] font-black uppercase mt-1 tracking-widest">{s.sub}</Text>
+             </View>
+           ))}
+        </View>
+
+        {/* Customization Section */}
+        <View className="mb-10">
+          <Text className="text-gray-500 text-xs font-black uppercase mb-4 tracking-widest px-1">
+            Board Aesthetics
           </Text>
-          <View style={{ flexDirection: 'row', gap: 12 }}>
-            {[
-              { label: 'Wins', val: 84, color: C.green },
-              { label: 'Losses', val: 32, color: C.red },
-              { label: 'Draws', val: 8, color: C.muted },
-            ].map((s) => (
-              <View key={s.label} style={{ flex: 1, alignItems: 'center' }}>
-                <Text style={{ color: s.color, fontSize: 28, fontWeight: '900' }}>{s.val}</Text>
-                <Text style={{ color: C.muted, fontSize: 12, fontWeight: '600' }}>{s.label}</Text>
-              </View>
+          <View className="flex-row gap-x-2">
+            {THEMES.map((t) => (
+              <TouchableOpacity
+                key={t}
+                onPress={() => setBoardTheme(t)}
+                className={`flex-1 py-4 rounded-3xl items-center border ${
+                  boardTheme === t ? 'bg-primary border-primary' : 'bg-dark-card border-dark-border'
+                }`}
+              >
+                <Text className={`font-black uppercase text-[10px] tracking-widest ${
+                  boardTheme === t ? 'text-white' : 'text-gray-500'
+                }`}>
+                  {t}
+                </Text>
+              </TouchableOpacity>
             ))}
           </View>
-          {/* Win rate bar */}
-          <View style={{ marginTop: 16, height: 8, borderRadius: 4, backgroundColor: C.border, overflow: 'hidden' }}>
-            <View style={{ width: '68%', height: '100%', backgroundColor: C.green, borderRadius: 4 }} />
-          </View>
-          <Text style={{ color: C.muted, fontSize: 11, marginTop: 6, textAlign: 'right' }}>68% win rate</Text>
         </View>
 
-        {/* Board Theme */}
-        <Text style={{ color: C.muted, fontSize: 12, fontWeight: '700', letterSpacing: 1.5, marginBottom: 12 }}>
-          BOARD THEME
-        </Text>
-        <View style={{ flexDirection: 'row', gap: 10, marginBottom: 28 }}>
-          {BOARD_THEMES.map((t) => (
-            <TouchableOpacity
-              key={t}
-              onPress={() => setBoardTheme(t)}
-              style={{
-                flex: 1, paddingVertical: 14, borderRadius: 18, alignItems: 'center',
-                backgroundColor: boardTheme === t ? C.accent : C.card,
-                borderWidth: 1, borderColor: boardTheme === t ? C.accent : C.border,
-              }}
-            >
-              <Text style={{ color: boardTheme === t ? '#000' : C.white, fontWeight: '700' }}>{t}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        {/* Settings Toggles */}
-        <Text style={{ color: C.muted, fontSize: 12, fontWeight: '700', letterSpacing: 1.5, marginBottom: 12 }}>
-          SETTINGS
-        </Text>
-        <View style={{ backgroundColor: C.card, borderRadius: 24, borderWidth: 1, borderColor: C.border, marginBottom: 28 }}>
-          {[
-            { label: '🔔  Push Notifications', value: notifs, setter: setNotifs },
-            { label: '🔊  Sound Effects', value: sounds, setter: setSounds },
-          ].map((item, i) => (
-            <View key={i} style={{
-              flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-              paddingHorizontal: 20, paddingVertical: 18,
-              borderBottomWidth: i === 0 ? 1 : 0, borderBottomColor: C.border,
-            }}>
-              <Text style={{ color: C.white, fontWeight: '600', fontSize: 15 }}>{item.label}</Text>
-              <Switch
-                value={item.value}
-                onValueChange={item.setter}
-                trackColor={{ false: C.border, true: C.accent }}
-                thumbColor="#fff"
+        {/* Settings List */}
+        <View className="mb-10">
+          <Text className="text-gray-500 text-xs font-black uppercase mb-4 tracking-widest px-1">
+            General Settings
+          </Text>
+          <View className="bg-dark-card rounded-[32px] border border-dark-border overflow-hidden">
+            <View className="flex-row items-center justify-between p-6 border-b border-dark-border">
+              <View className="flex-row items-center">
+                <View className="w-10 h-10 rounded-2xl bg-blue-500/10 items-center justify-center mr-4">
+                   <LucideBell color="#3b82f6" size={20} />
+                </View>
+                <Text className="text-white font-bold">Push Notifications</Text>
+              </View>
+              <Switch 
+                value={notifs} 
+                onValueChange={setNotifs}
+                trackColor={{ false: '#1e293b', true: '#8b5cf6' }}
               />
             </View>
-          ))}
+            <View className="flex-row items-center justify-between p-6">
+              <View className="flex-row items-center">
+                <View className="w-10 h-10 rounded-2xl bg-orange-500/10 items-center justify-center mr-4">
+                   <LucideVolume2 color="#f97316" size={20} />
+                </View>
+                <Text className="text-white font-bold">Haptic & Sounds</Text>
+              </View>
+              <Switch 
+                value={sounds} 
+                onValueChange={setSounds}
+                trackColor={{ false: '#1e293b', true: '#8b5cf6' }}
+              />
+            </View>
+          </View>
         </View>
 
-        {/* Sign Out */}
-        <TouchableOpacity
+        {/* Actions */}
+        <TouchableOpacity 
           onPress={() => router.replace('/(auth)/login')}
-          style={{
-            backgroundColor: '#ef444420', paddingVertical: 18, borderRadius: 22,
-            alignItems: 'center', borderWidth: 1, borderColor: '#ef444440',
-          }}
+          className="flex-row items-center justify-center bg-red-500/10 border border-red-500/30 p-6 rounded-[32px]"
         >
-          <Text style={{ color: C.red, fontWeight: '800', fontSize: 16 }}>Sign Out</Text>
+          <LucideLogOut color="#ef4444" size={20} className="mr-3" />
+          <Text className="text-red-500 font-black uppercase tracking-widest">Sign Out</Text>
         </TouchableOpacity>
+
       </ScrollView>
     </SafeAreaView>
   );
 }
+

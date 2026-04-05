@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Stockfish Worker</title>
+</head>
+<body>
+    <script>
+        // Load stockfish.js (WASM version)
+        // Note: For actual local usage, we'd bundle this or fetch from a reliable CDN
+        var stockfish = new Worker('https://cdnjs.cloudflare.com/ajax/libs/stockfish.js/10.0.2/stockfish.js');
+
+        stockfish.onmessage = function(event) {
+            window.ReactNativeWebView.postMessage(event.data);
+        };
+
+        window.addEventListener('message', function(event) {
+            var data = event.data;
+            if (typeof data === 'string') {
+                stockfish.postMessage(data);
+            }
+        });
+
+        // Bootstrap
+        stockfish.postMessage('uci');
+    </script>
+</body>
+</html>

@@ -1,15 +1,15 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import Animated, { useAnimatedStyle, withSpring, useDerivedValue } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, withSpring } from 'react-native-reanimated';
 
 interface EvalBarProps {
   score: number; // positive = white advantage, negative = black
 }
 
 export default function EvalBar({ score }: EvalBarProps) {
-  const clamped = Math.max(-1, Math.min(1, score));          // –1 to +1
-  const whitePct = (clamped + 1) / 2;                       // 0 → 1
-  const blackPct = 1 - whitePct;                            // 0 → 1
+  const clamped = Math.max(-10, Math.min(10, score));
+  const whitePct = (clamped + 10) / 20;
+  const blackPct = 1 - whitePct;
 
   const animStyle = useAnimatedStyle(() => ({
     height: withSpring(`${blackPct * 100}%` as any, { damping: 14, stiffness: 90 }),
@@ -19,17 +19,18 @@ export default function EvalBar({ score }: EvalBarProps) {
     Math.abs(score) < 0.05
       ? '='
       : score > 0
-      ? `+${(score * 10).toFixed(1)}`
-      : `${(score * 10).toFixed(1)}`;
+      ? `+${score.toFixed(1)}`
+      : `${score.toFixed(1)}`;
 
   return (
-    <View style={{
-      width: 10, height: 370, backgroundColor: '#f1f5f9',
-      borderRadius: 8, overflow: 'hidden', marginRight: 8,
-    }}>
+    <View className="w-4 h-full bg-slate-200 rounded-full overflow-hidden mr-4 border border-slate-600">
       {/* Black side fills from top */}
-      <Animated.View style={[{ width: '100%', backgroundColor: '#0f172a' }, animStyle]} />
+      <Animated.View className="w-full bg-slate-900" style={[animStyle]} />
       {/* Score label at the midpoint */}
+      <View className="absolute top-0 bottom-0 left-0 right-0 items-center justify-center pointer-events-none">
+         <Text className="text-[8px] font-black transform -rotate-90 text-slate-500">{label}</Text>
+      </View>
     </View>
   );
 }
+

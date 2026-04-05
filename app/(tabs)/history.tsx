@@ -1,5 +1,6 @@
+import React from 'react';
 import { View, Text, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
-import { History, Target, TrendingUp, ChevronRight, Share2, Medal } from 'lucide-react-native';
+import { LucideHistory, LucideMedal, LucideChevronRight, LucideShare2, LucideTrophy, LucideTrendingUp } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 
 const PAST_GAMES = [
@@ -13,38 +14,43 @@ export default function HistoryScreen() {
   const router = useRouter();
 
   return (
-    <SafeAreaView className="flex-1 bg-primary">
-      <ScrollView className="flex-1 px-6 pt-6">
-        <Text className="text-white text-3xl font-bold mb-2">Game History</Text>
-        <Text className="text-gray-400 mb-8">Review your past performance</Text>
+    <SafeAreaView className="flex-1 bg-dark-bg">
+      <ScrollView className="flex-1 px-6 pt-12" showsVerticalScrollIndicator={false}>
+        <Text className="text-gray-400 text-xs font-bold tracking-[2px] uppercase mb-1">
+          Performance
+        </Text>
+        <Text className="text-white text-3xl font-black mb-8">
+          Match History
+        </Text>
 
         {/* Global Summary */}
-        <View className="bg-secondary/40 p-6 rounded-[32px] mb-8 border border-white/5 flex-row items-center gap-6 shadow-xl">
-           <View className="items-center bg-white/5 p-4 rounded-3xl border border-white/5">
-                <Text className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1">Win Rate</Text>
-                <Text className="text-white text-2xl font-bold">68%</Text>
+        <View className="bg-dark-card p-6 rounded-[32px] mb-8 border border-dark-border flex-row items-center gap-6">
+           <View className="items-center bg-primary/10 p-5 rounded-3xl border border-primary/20">
+                <LucideTrendingUp color="#8b5cf6" size={24} />
+                <Text className="text-white text-2xl font-black mt-2">68%</Text>
+                <Text className="text-gray-500 text-[8px] font-black uppercase tracking-widest mt-0.5">Win Rate</Text>
            </View>
            <View className="flex-1 gap-2">
                 <View className="flex-row items-center gap-2">
-                   <View className="w-2 h-2 rounded-full bg-green-500" />
-                   <Text className="text-white font-medium">84 Wins</Text>
+                   <View className="w-2.5 h-2.5 rounded-full bg-green-500" />
+                   <Text className="text-white font-bold text-sm">84 Wins</Text>
                 </View>
                 <View className="flex-row items-center gap-2">
-                   <View className="w-2 h-2 rounded-full bg-red-400" />
-                   <Text className="text-white font-medium">32 Losses</Text>
+                   <View className="w-2.5 h-2.5 rounded-full bg-red-400" />
+                   <Text className="text-white font-bold text-sm">32 Losses</Text>
                 </View>
                 <View className="flex-row items-center gap-2">
-                   <View className="w-2 h-2 rounded-full bg-gray-500" />
-                   <Text className="text-white font-medium">8 Draws</Text>
+                   <View className="w-2.5 h-2.5 rounded-full bg-gray-600" />
+                   <Text className="text-white font-bold text-sm">8 Draws</Text>
                 </View>
            </View>
         </View>
 
         {/* Filters */}
-        <View className="flex-row gap-3 mb-6">
-            {['All', 'Wins', 'Losses', 'Online'].map((filter) => (
-                <TouchableOpacity key={filter} className={`px-4 py-2 rounded-full border ${filter === 'All' ? 'bg-accent border-accent' : 'border-white/10'}`}>
-                    <Text className={`font-bold text-xs ${filter === 'All' ? 'text-black' : 'text-gray-400'}`}>{filter}</Text>
+        <View className="flex-row gap-3 mb-8">
+            {['All', 'Wins', 'Ranked', 'AI'].map((filter) => (
+                <TouchableOpacity key={filter} className={`px-5 py-2.5 rounded-full border ${filter === 'All' ? 'bg-primary border-primary' : 'border-dark-border'}`}>
+                    <Text className={`font-black text-[10px] uppercase tracking-widest ${filter === 'All' ? 'text-white' : 'text-gray-500'}`}>{filter}</Text>
                 </TouchableOpacity>
             ))}
         </View>
@@ -54,33 +60,33 @@ export default function HistoryScreen() {
             <TouchableOpacity 
                 key={game.id}
                 onPress={() => router.push(`/game/replay_${game.id}`)}
-                className="bg-secondary/20 p-5 rounded-2xl mb-4 border border-white/5"
+                className="bg-dark-card/40 p-6 rounded-[32px] mb-6 border border-dark-border"
             >
-                <View className="flex-row justify-between items-start mb-3">
-                    <View className="flex-row items-center gap-3">
-                        <View className={`w-8 h-8 rounded-lg items-center justify-center ${game.result === 'Won' ? 'bg-green-500/10' : game.result === 'Lost' ? 'bg-red-500/10' : 'bg-gray-500/10'}`}>
-                            {game.result === 'Won' ? <Medal size={20} color="#4ade80" /> : <History size={20} color="#94a3b8" />}
+                <View className="flex-row justify-between items-start mb-4">
+                    <View className="flex-row items-center gap-4">
+                        <View className={`w-12 h-12 rounded-2xl items-center justify-center ${game.result === 'Won' ? 'bg-green-500/10' : game.result === 'Lost' ? 'bg-red-500/10' : 'bg-gray-500/10'}`}>
+                            {game.result === 'Won' ? <LucideMedal size={24} color="#22c55e" /> : <LucideHistory size={24} color="#94a3b8" />}
                         </View>
                         <View>
-                            <Text className="text-white font-bold text-lg">{game.opponent}</Text>
-                            <Text className="text-gray-400 text-xs">{game.type} • {game.date}</Text>
+                            <Text className="text-white font-black text-lg">{game.opponent}</Text>
+                            <Text className="text-gray-500 text-[10px] font-black uppercase tracking-widest">{game.type} • {game.date}</Text>
                         </View>
                     </View>
                     <View className="items-end">
-                        <Text className={`font-bold ${game.result === 'Won' ? 'text-green-500' : game.result === 'Lost' ? 'text-red-400' : 'text-gray-400'}`}>
+                        <Text className={`font-black text-xs ${game.result === 'Won' ? 'text-green-500' : game.result === 'Lost' ? 'text-red-400' : 'text-gray-400'}`}>
                             {game.result.toUpperCase()}
                         </Text>
-                        <Text className={`text-xs font-mono font-bold ${game.rating.startsWith('+') ? 'text-green-400' : 'text-red-400'}`}>
-                            {game.rating} Elo
+                        <Text className={`text-sm font-black mt-1 ${game.rating.startsWith('+') ? 'text-neon-cyan' : 'text-red-400'}`}>
+                            {game.rating} ELO
                         </Text>
                     </View>
                 </View>
 
-                <View className="flex-row items-center justify-between pt-3 border-t border-white/5">
-                    <Text className="text-gray-500 text-xs font-bold uppercase tracking-widest">{game.color} Pieces</Text>
+                <View className="flex-row items-center justify-between pt-4 border-t border-dark-border">
+                    <Text className="text-gray-500 text-[9px] font-black uppercase tracking-widest">{game.color} Pieces Controlled</Text>
                     <View className="flex-row items-center gap-4">
-                        <Share2 size={16} color="#94a3b8" />
-                        <ChevronRight size={20} color="#FBBF24" />
+                        <LucideShare2 size={18} color="#475569" />
+                        <LucideChevronRight size={20} color="#8b5cf6" />
                     </View>
                 </View>
             </TouchableOpacity>
@@ -91,3 +97,4 @@ export default function HistoryScreen() {
     </SafeAreaView>
   );
 }
+
