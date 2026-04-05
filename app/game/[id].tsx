@@ -64,82 +64,82 @@ export default function GameScreen() {
       <Stack.Screen options={{ headerShown: false }} />
 
       {/* Modern Header */}
-      <View className="flex-row items-center px-4 pt-12 pb-4">
-
-        <TouchableOpacity onPress={() => router.back()} className="p-2 mr-2">
-          <LucideChevronLeft size={24} color="white" />
+      <View className="flex-row items-center px-4 pt-16 pb-6 bg-dark-card border-b border-dark-border">
+        <TouchableOpacity onPress={() => router.back()} className="p-3 mr-2 bg-dark-bg rounded-2xl">
+          <LucideChevronLeft size={24} color="#22d3ee" />
         </TouchableOpacity>
         <View className="flex-1">
-          <Text className="text-white text-lg font-black uppercase tracking-widest">
-            {mode === 'AI' ? `Checkmate X Engine` : 'Multiplayer Match'}
+          <Text className="text-white text-xl font-black uppercase tracking-widest">
+            {mode === 'AI' ? `ENGINE X` : 'LIVE MATCH'}
           </Text>
-          <Text className="text-gray-500 text-[10px] font-black uppercase tracking-widest">
-            {mode === 'AI' ? `Level: ${difficulty}` : 'Ranked Session'}
+          <Text className="text-neon-cyan text-[10px] font-black uppercase tracking-[2px]">
+            {mode === 'AI' ? `DIFFICULTY: ${difficulty}` : 'VS ONLINE PLAYER'}
           </Text>
         </View>
-        <View className="bg-dark-card px-4 py-1.5 rounded-full border border-dark-border">
-           <Text className={`${turn === 'w' ? 'text-white' : 'text-gray-500'} font-black text-xs`}>
-             • {turn === 'w' ? 'WHITE' : 'BLACK'}
+        <View className="bg-primary/20 px-5 py-2 rounded-2xl border border-primary/50">
+           <Text className="text-white font-black text-[10px] uppercase tracking-widest">
+             {turn === 'w' ? 'WHITE TO MOVE' : 'BLACK TO MOVE'}
            </Text>
         </View>
       </View>
 
       {/* Opponent Info */}
-      <View className={`mx-4 p-4 rounded-3xl border ${!isPlayerTurn ? 'border-primary border-2 bg-primary/5' : 'border-dark-border bg-dark-card'} flex-row items-center justify-between mt-2`}>
-        <View className="flex-row items-center gap-x-3">
-          <View className="w-12 h-12 rounded-2xl bg-dark-bg items-center justify-center">
-            <LucideBrain color={!isPlayerTurn ? '#8b5cf6' : '#475569'} size={24} />
+      <View className={`mx-4 p-5 rounded-[32px] border ${!isPlayerTurn ? 'border-primary border-2 bg-primary/10' : 'border-dark-border bg-dark-card'} flex-row items-center justify-between mt-6`}>
+        <View className="flex-row items-center gap-x-4">
+          <View className="w-14 h-14 rounded-3xl bg-dark-bg items-center justify-center border border-dark-border">
+            <LucideBrain color={!isPlayerTurn ? '#a855f7' : '#94a3b8'} size={28} />
           </View>
           <View>
             <View className="flex-row items-center">
-              <Text className="text-white font-black text-sm mr-2">{mode === 'AI' ? `Stockfish v10` : 'Opponent'}</Text>
+              <Text className="text-white font-black text-base mr-3">{mode === 'AI' ? `STOCKFISH V10` : 'OPPONENT'}</Text>
               {isThinking && <ActivityIndicator size="small" color="#8b5cf6" />}
             </View>
-            <View className="flex-row flex-wrap max-w-[150px]">
+            <View className="flex-row flex-wrap max-w-[150px] mt-1">
               {capturedPieces.b.map((p, i) => (
-                <Text key={i} className="text-gray-500 text-xs">{PIECE_SYMBOLS[p]}</Text>
+                <Text key={i} className="text-gray-400 text-lg mx-0.5">{PIECE_SYMBOLS[p]}</Text>
               ))}
             </View>
           </View>
         </View>
-        <View className={`px-4 py-2 rounded-2xl ${!isPlayerTurn ? 'bg-primary' : 'bg-dark-bg border border-dark-border'}`}>
-          <Text className={`text-xl font-black ${!isPlayerTurn ? 'text-white' : 'text-gray-400'}`}>
+        <View className={`px-5 py-3 rounded-2xl ${!isPlayerTurn ? 'bg-primary shadow-lg shadow-primary/50' : 'bg-dark-bg border border-dark-border'}`}>
+          <Text className={`text-2xl font-black ${!isPlayerTurn ? 'text-white' : 'text-slate-500'}`}>
             {formatTime(blackTime)}
           </Text>
         </View>
       </View>
 
-      {/* Board & Eval */}
-      <View className="flex-1 justify-center items-center px-4 py-6">
-        <View className="flex-direction-row h-[380px] w-full items-center justify-center" style={{ flexDirection: 'row' }}>
+      {/* Board Area - Fixing Squashing */}
+      <View className="flex-1 justify-center items-center py-4">
+        <View style={{ width: '100%', aspectRatio: 1, paddingHorizontal: 4 }} className="flex-row items-center justify-center">
            <EvalBar score={evaluation} />
-           <View className="flex-1">
+           <View className="flex-1 items-center justify-center">
              <Board />
            </View>
         </View>
       </View>
 
       {/* Player Info */}
-      <View className={`mx-4 p-4 rounded-3xl border ${isPlayerTurn ? 'border-neon-cyan border-2 bg-neon-cyan/5' : 'border-dark-border bg-dark-card'} flex-row items-center justify-between mb-4`}>
-        <View className="flex-row items-center gap-x-3">
-          <View className="w-12 h-12 rounded-2xl bg-neon-cyan/10 items-center justify-center">
-            <LucideUser color={isPlayerTurn ? '#22d3ee' : '#475569'} size={24} />
+      <View className={`mx-4 p-5 rounded-[32px] border ${isPlayerTurn ? 'border-neon-cyan border-2 bg-neon-cyan/10' : 'border-dark-border bg-dark-card'} flex-row items-center justify-between mb-6`}>
+        <View className="flex-row items-center gap-x-4">
+          <View className="w-14 h-14 rounded-3xl bg-neon-cyan/20 items-center justify-center border border-neon-cyan/30">
+            <LucideUser color={isPlayerTurn ? '#22d3ee' : '#94a3b8'} size={28} />
           </View>
           <View>
-            <Text className="text-white font-black text-sm">YOU</Text>
-            <View className="flex-row flex-wrap max-w-[150px]">
+            <Text className="text-white font-black text-base uppercase">YOU</Text>
+            <View className="flex-row flex-wrap max-w-[150px] mt-1">
               {capturedPieces.w.map((p, i) => (
-                <Text key={i} className="text-gray-500 text-xs">{PIECE_SYMBOLS[p]}</Text>
+                <Text key={i} className="text-cyan-400 text-lg mx-0.5">{PIECE_SYMBOLS[p]}</Text>
               ))}
             </View>
           </View>
         </View>
-        <View className={`px-4 py-2 rounded-2xl ${isPlayerTurn ? 'bg-neon-cyan' : 'bg-dark-bg border border-dark-border'}`}>
-          <Text className={`text-xl font-black ${isPlayerTurn ? 'text-black' : 'text-gray-400'}`}>
+        <View className={`px-5 py-3 rounded-2xl ${isPlayerTurn ? 'bg-neon-cyan shadow-lg shadow-neon-cyan/50' : 'bg-dark-bg border border-dark-border'}`}>
+          <Text className={`text-2xl font-black ${isPlayerTurn ? 'text-black' : 'text-slate-500'}`}>
             {formatTime(whiteTime)}
           </Text>
         </View>
       </View>
+
 
       {/* Action Controls */}
       <View className="flex-row justify-between px-4 mb-8">

@@ -102,9 +102,11 @@ export default function Board() {
     <View style={{
       width: BOARD_SIZE,
       height: BOARD_SIZE,
+      aspectRatio: 1,
       borderRadius: 12,
       overflow: 'hidden',
       borderWidth: 4,
+
       borderColor: THEMES[boardTheme]?.dark || '#0f172a',
       elevation: 20,
       shadowColor: '#000',

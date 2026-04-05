@@ -4,7 +4,8 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useGameStore } from '../../store/useGameStore';
-import { LucideTrophy, LucideGamepad2, LucideHistory, LucideTv, LucideUser, LucideSparkles, LucideSwords } from 'lucide-react-native';
+import { LucideTrophy, LucideGamepad2, LucideHistory, LucideTv, LucideUser, LucideSparkles, LucideSwords, LucideArrowRight } from 'lucide-react-native';
+
 import { LinearGradient } from 'expo-linear-gradient';
 
 const { width } = Dimensions.get('window');
@@ -24,50 +25,77 @@ export default function Dashboard() {
     <View style={{ flex: 1 }} className="bg-dark-bg">
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 60, paddingBottom: 40 }}
+        contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 100, paddingBottom: 100 }}
         showsVerticalScrollIndicator={false}
       >
 
         {/* Header Section */}
-        <View className="flex-row justify-between items-center mb-8">
+        <View className="flex-row justify-between items-center mb-10">
           <View>
-            <Text className="text-gray-400 text-xs font-bold tracking-[2px] uppercase">
-                Welcome back
-            </Text>
-            <Text className="text-white text-3xl font-black mt-1">
-                Grandmaster ♟
-            </Text>
+            <Text className="text-gray-400 text-[10px] font-black uppercase tracking-[3px] mb-2">Checkmate X Premium</Text>
+            <Text className="text-white text-3xl font-black">Welcome back,</Text>
+            <Text className="text-neon-cyan text-4xl font-black">Grandmaster ♟</Text>
           </View>
           <TouchableOpacity 
-            onPress={() => router.push('/(tabs)/profile')}
-            className="w-12 h-12 rounded-full border-2 border-primary overflow-hidden"
+             onPress={() => router.push('/(tabs)/profile' as any)}
+             className="w-16 h-16 rounded-[24px] bg-dark-card border-2 border-neon-cyan items-center justify-center shadow-lg shadow-neon-cyan/20"
           >
-            <View className="flex-1 bg-primary-light/20 items-center justify-center">
-              <LucideUser color="#8b5cf6" size={24} />
-            </View>
+            <LucideUser color="#22d3ee" size={32} />
           </TouchableOpacity>
         </View>
 
+        {/* Priority Action Card */}
+        <TouchableOpacity
+          onPress={() => router.push('/play' as any)}
+          activeOpacity={0.9}
+          className="rounded-[40px] overflow-hidden mb-10 shadow-2xl shadow-primary/30"
+        >
+          <LinearGradient
+            colors={['#8b5cf6', '#4f46e5']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            className="p-8"
+          >
+            <View className="flex-row justify-between items-start">
+              <View className="flex-1 pr-6">
+                <View className="bg-white/20 self-start px-3 py-1 rounded-full mb-4">
+                  <Text className="text-white text-[10px] font-black uppercase">Rapid Match</Text>
+                </View>
+                <Text className="text-white text-3xl font-black mb-2">Play Online</Text>
+                <Text className="text-white/80 text-sm font-bold leading-5">Challenge world-class players in real-time matchups.</Text>
+              </View>
+              <View className="bg-white/20 p-5 rounded-[28px] border border-white/30">
+                <LucideSwords color="#fff" size={40} />
+              </View>
+            </View>
+            <View className="flex-row items-center mt-8">
+              <Text className="text-white text-xs font-black uppercase tracking-widest mr-3">Find Opponent</Text>
+              <LucideArrowRight color="#fff" size={16} />
+            </View>
+          </LinearGradient>
+        </TouchableOpacity>
+
         {/* Stats Row */}
-        <View className="flex-row gap-x-3 mb-8">
+        <View className="flex-row gap-x-3 mb-10">
           {[
             { label: 'Rating', value: '1450', sub: '+12 today', color: 'text-neon-cyan' },
             { label: 'Win Rate', value: '68%', sub: '84 wins', color: 'text-neon-purple' },
             { label: 'Rank', value: '#42', sub: 'Global', color: 'text-neon-blue' },
           ].map((s) => (
-            <View key={s.label} className="flex-1 bg-dark-card/60 rounded-3xl p-4 border border-dark-border">
-              <Text className="text-gray-500 text-[10px] font-bold tracking-wider mb-1">
+            <View key={s.label} className="flex-1 bg-dark-card border border-dark-border rounded-[32px] p-5 shadow-sm shadow-black">
+              <Text className="text-slate-500 text-[9px] font-black tracking-widest mb-2">
                 {s.label.toUpperCase()}
               </Text>
-              <Text className="text-white text-xl font-black">
+              <Text className="text-white text-2xl font-black">
                 {s.value}
               </Text>
-              <Text className={`${s.color} text-[10px] font-bold mt-1`}>
+              <Text className={`${s.color} text-[10px] font-bold mt-2`}>
                 {s.sub}
               </Text>
             </View>
           ))}
         </View>
+
 
         {/* Quick Play Highlight */}
         <Text className="text-white text-lg font-black mb-4">Quick Play</Text>
