@@ -36,11 +36,13 @@ export default function PlayScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-dark-bg">
+    <View style={{ flex: 1 }} className="bg-dark-bg">
       <ScrollView
-        contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 40, paddingBottom: 60 }}
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 60, paddingBottom: 60 }}
         showsVerticalScrollIndicator={false}
       >
+
         <Text className="text-gray-400 text-xs font-black uppercase tracking-widest mb-1">Combat Setup</Text>
         <Text className="text-white text-3xl font-black mb-8">New Match</Text>
 
@@ -124,7 +126,8 @@ export default function PlayScreen() {
           </LinearGradient>
         </TouchableOpacity>
       </ScrollView>
-    </SafeAreaView>
+    </View>
+
   );
 }
 

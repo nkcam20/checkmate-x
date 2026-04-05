@@ -14,8 +14,13 @@ export default function HistoryScreen() {
   const router = useRouter();
 
   return (
-    <SafeAreaView className="flex-1 bg-dark-bg">
-      <ScrollView className="flex-1 px-6 pt-12" showsVerticalScrollIndicator={false}>
+    <View style={{ flex: 1 }} className="bg-dark-bg">
+      <ScrollView 
+        style={{ flex: 1 }}
+        className="px-6 pt-12" 
+        showsVerticalScrollIndicator={false}
+      >
+
         <Text className="text-gray-400 text-xs font-bold tracking-[2px] uppercase mb-1">
           Performance
         </Text>
@@ -94,7 +99,8 @@ export default function HistoryScreen() {
 
         <View className="h-20" />
       </ScrollView>
-    </SafeAreaView>
+    </View>
+
   );
 }
 

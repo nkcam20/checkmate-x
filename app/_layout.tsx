@@ -4,10 +4,13 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
+import { View } from 'react-native';
 import 'react-native-reanimated';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StockfishService } from '../services/StockfishService';
 import '../global.css';
+
+import { StatusBar } from 'expo-status-bar';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -34,16 +37,20 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <ThemeProvider value={DarkTheme}>
-        <StockfishService />
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="(auth)" />
-          <Stack.Screen name="game/[id]" options={{ animation: 'slide_from_bottom' }} />
-          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-        </Stack>
-      </ThemeProvider>
+      <View style={{ flex: 1, backgroundColor: '#020617' }}>
+        <StatusBar style="light" translucent={true} />
+        <ThemeProvider value={DarkTheme}>
+          <StockfishService />
+          <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: '#020617' } }}>
+            <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="(auth)" />
+            <Stack.Screen name="game/[id]" options={{ animation: 'slide_from_bottom' }} />
+            <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+          </Stack>
+        </ThemeProvider>
+      </View>
     </GestureHandlerRootView>
   );
 }
+
 

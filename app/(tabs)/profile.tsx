@@ -14,11 +14,13 @@ export default function ProfileScreen() {
   const THEMES = ['Classic', 'Dark', 'Neon'] as const;
 
   return (
-    <SafeAreaView className="flex-1 bg-dark-bg">
+    <View style={{ flex: 1 }} className="bg-dark-bg">
       <ScrollView
-        contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 40, paddingBottom: 60 }}
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 60, paddingBottom: 60 }}
         showsVerticalScrollIndicator={false}
       >
+
         {/* Header with Avatar */}
         <View className="items-center mb-10">
           <View className="relative">
@@ -116,7 +118,8 @@ export default function ProfileScreen() {
         </TouchableOpacity>
 
       </ScrollView>
-    </SafeAreaView>
+    </View>
+
   );
 }
 

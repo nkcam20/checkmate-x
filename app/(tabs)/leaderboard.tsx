@@ -15,7 +15,8 @@ const LEADERS = [
 
 export default function Leaderboard() {
   return (
-    <SafeAreaView className="flex-1 bg-dark-bg">
+    <View style={{ flex: 1 }} className="bg-dark-bg">
+
       <View className="px-6 pt-12 pb-6">
         <Text className="text-gray-400 text-xs font-bold tracking-[2px] uppercase mb-1">
           Global Rankings
@@ -89,6 +90,7 @@ export default function Leaderboard() {
           ))}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
+
   );
 }

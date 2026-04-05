@@ -59,11 +59,13 @@ export default function GameScreen() {
   const isPlayerTurn = turn === playerColor;
 
   return (
-    <SafeAreaView className="flex-1 bg-dark-bg">
+    <View style={{ flex: 1 }} className="bg-dark-bg">
+
       <Stack.Screen options={{ headerShown: false }} />
 
       {/* Modern Header */}
-      <View className="flex-row items-center px-4 py-4">
+      <View className="flex-row items-center px-4 pt-12 pb-4">
+
         <TouchableOpacity onPress={() => router.back()} className="p-2 mr-2">
           <LucideChevronLeft size={24} color="white" />
         </TouchableOpacity>
@@ -189,6 +191,7 @@ export default function GameScreen() {
           </View>
         </View>
       )}
-    </SafeAreaView>
+    </View>
+
   );
 }

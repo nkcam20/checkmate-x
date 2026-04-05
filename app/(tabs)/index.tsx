@@ -21,12 +21,13 @@ export default function Dashboard() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-dark-bg">
+    <View style={{ flex: 1 }} className="bg-dark-bg">
       <ScrollView
-        className="flex-1"
-        contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 20, paddingBottom: 40 }}
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 60, paddingBottom: 40 }}
         showsVerticalScrollIndicator={false}
       >
+
         {/* Header Section */}
         <View className="flex-row justify-between items-center mb-8">
           <View>
@@ -144,16 +145,17 @@ export default function Dashboard() {
             <Text className="text-white font-bold mt-3">History</Text>
           </TouchableOpacity>
           <TouchableOpacity 
-             onPress={() => router.push('/leaderboard')}
-
+             onPress={() => router.push('/leaderboard' as any)}
              className="flex-1 bg-dark-card border border-dark-border p-6 rounded-[32px] items-center"
           >
+
             <LucideTrophy color="#fbbf24" size={28} />
             <Text className="text-white font-bold mt-3">Rankings</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
+
 
