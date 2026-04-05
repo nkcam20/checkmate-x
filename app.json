@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "chessapp",
-    "slug": "chessapp",
+    "name": "Chess Master",
+    "slug": "chess-master",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
