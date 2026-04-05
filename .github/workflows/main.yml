@@ -1,0 +1,38 @@
+name: Android Build
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🏗 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: 🏗 Setup Expo
+        uses: expo/expo-github-action@v8
+        with:
+          expo-version: latest
+          eas-cache: true
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: 🚀 Build APK
+        run: |
+          npx expo prebuild --platform android
+          cd android && ./gradlew assembleRelease
+
+      - name: 📤 Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Checkmate-X-APK
+          path: android/app/build/outputs/apk/release/app-release.apk
